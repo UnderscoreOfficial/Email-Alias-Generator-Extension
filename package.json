@@ -1,7 +1,7 @@
 {
   "name": "alias-generator",
-  "displayName": "Alias generator",
-  "version": "0.1.0",
+  "displayName": "Email Alias Generator Extension",
+  "version": "0.1.1",
   "description": "Generate Email Aliases",
   "author": "UnderscoreOfficial",
   "scripts": {
@@ -41,9 +41,6 @@
     "typescript": "5.3.3"
   },
   "manifest": {
-    "host_permissions": [
-      "https://*/*"
-    ],
     "permissions": [
       "tabs"
     ],
