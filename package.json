@@ -1,0 +1,56 @@
+{
+  "name": "alias-generator",
+  "displayName": "Alias generator",
+  "version": "0.1.0",
+  "description": "Generate Email Aliases",
+  "author": "UnderscoreOfficial",
+  "scripts": {
+    "dev": "plasmo dev --target=firefox-mv3",
+    "build": "tsc && plasmo build --zip --hoist --target=firefox-mv3",
+    "package": "plasmo package",
+    "dev:chrome": "plasmo dev --target=chrome-mv3",
+    "build:chrome": "plasmo build --zip --hoist --target=chrome-mv3",
+    "build:firefox": "plasmo build --zip --hoist --target=firefox-mv3"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.9.2",
+    "@mantine/form": "^7.9.2",
+    "@mantine/hooks": "^7.9.2",
+    "@mantine/notifications": "^7.9.2",
+    "@plasmohq/storage": "^1.10.0",
+    "@types/firefox-webext-browser": "^120.0.3",
+    "plasmo": "0.86.3",
+    "random-words": "^2.0.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.51.4",
+    "secure": "link:@plasmohq/storage/secure",
+    "tailwindcss": "3.4.1",
+    "tldts": "^6.1.20"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
+    "@types/chrome": "0.0.258",
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "postcss": "8.4.33",
+    "postcss-preset-mantine": "^1.15.0",
+    "postcss-simple-vars": "^7.0.1",
+    "prettier": "3.2.4",
+    "typescript": "5.3.3"
+  },
+  "manifest": {
+    "host_permissions": [
+      "https://*/*"
+    ],
+    "permissions": [
+      "tabs"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{ba596a7d-1393-4312-9a0a-69c47ebfd05c}"
+      }
+    }
+  }
+}

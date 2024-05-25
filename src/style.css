@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Radio Canada Big";
+  src: url("/public/fonts/Radio_Canada_Big/RadioCanadaBig-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+:root {
+  --purple-primary: #762489;
+  --purple-secondary: #AE3FC8;
+  --gray-primary: #252525;
+}
+
+.bg-gray-primary {
+  background-color: var(--gray-primary);
+}
+
+.gray-button {
+  background-color: #343434;
+}
+
+.gray-button:hover {
+ background-color: #464646; 
+}
+
+.tab-hover:hover, .tab-hover:hover svg {
+  color: var(--purple-secondary);
+}
+
+.purple-custom-bg, .purple-custom-no-hover {
+  background-color: var(--purple-primary);
+}
+
+.purple-custom-bg:hover {
+  background-color: var(--purple-secondary);
+}
+
+.purple-custom {
+  color: var(--purple-primary);
+}
+
+.purple-custom:hover {
+  color: var(--purple-secondary); 
+}
+
+.svg-bg, .svg-bg:hover {
+  background-color: transparent;
+}
