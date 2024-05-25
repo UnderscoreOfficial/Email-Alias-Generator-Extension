@@ -30,7 +30,7 @@ I wanted something similar in ease of use equal to how password managers generat
 - Firefox
     - Open the downloaded file (firefox will confirm if you want to install this extension)
 
-### Features
+## Features
 - Flexible settings to change how alias is generated / what is enabled
 - Random character / word generation
 - Get current website url
@@ -38,7 +38,7 @@ I wanted something similar in ease of use equal to how password managers generat
 - Save generated aliases
 - Dark / Light mode
 
-### Build
+## Build
 
 1. Install Node.js
 2. Install pnpm: `npm install -g pnpm`
