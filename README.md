@@ -16,13 +16,13 @@ I wanted something similar in ease of use equal to how password managers generat
 ## Install
 
 ### Chrome / Chromium
-[Download](https://chromewebstore.google.com) from chrome webstore.
+[Download](https://chromewebstore.google.com) from chrome webstore (Waiting on approval).
 
 ### Firefox
-[Download](https://addons.mozilla.org) from mozilla addons.
+[Download](https://addons.mozilla.org) from mozilla addons (Waiting on approval).
 
 ### Manual
-[Download](https://github.com/UnderscoreOfficial/Email-Alias-Generator-Extension) latest release from github.
+[Download](https://github.com/UnderscoreOfficial/Email-Alias-Generator-Extension) latest release from github (Waiting on approval).
 
 - Chrome
     - Open browser extension page
