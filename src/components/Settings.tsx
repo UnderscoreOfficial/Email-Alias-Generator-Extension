@@ -249,7 +249,7 @@ export default function Settings() {
       </Collapse>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Version (1.0)</Center>
+        <Center>Version (0.1.0)</Center>
         <Center className="text-lg mr-2">
           Github
           <a href="https://github.com/UnderscoreOfficial/Email-Alias-Generator-Extension">
