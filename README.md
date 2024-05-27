@@ -38,6 +38,21 @@ I wanted something similar in ease of use equal to how password managers generat
 - Save generated aliases
 - Dark / Light mode
 
+## Important
+
+This extension gets your current active page url when opened. This is only used for the current domain section when creating an alias and is only ever
+stored in localstorage in your browser. If someone wants to verify this the current url is saved / accessed in these 3 files 
+(src/popup.tsx, src/components/Create-Alias.tsx, src/utils/generatedAlias.ts). Due to the way extension permissions work there is no way for me to disable
+this functionality without making a separate build to where your browser won't require this permision at all. 
+
+Required permisions for each browser:
+    - (chrome / chromium) Read your browsing history
+    - (firefox) Access browser tabs
+
+Saving created aliases, similar to the current active page url these are only ever saved in your browsers localstorage. Saving created aliases is optional
+you are able to disable the alias page and thus the saving of aliases to localstorage. To do this go to the settings tab and toggle (Disable Alias Storing), 
+this will disable the alias page, change the create page to copy only and force the create page as the default page.
+
 ## Build
 
 1. Install Node.js
