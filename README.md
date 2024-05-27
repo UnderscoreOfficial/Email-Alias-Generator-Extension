@@ -46,8 +46,8 @@ stored in localstorage in your browser. If someone wants to verify this the curr
 this functionality without making a separate build to where your browser won't require this permision at all. 
 
 Required permisions for each browser:
-    - (chrome / chromium) Read your browsing history
-    - (firefox) Access browser tabs
+- (chrome / chromium) Read your browsing history
+- (firefox) Access browser tabs
 
 Saving created aliases, similar to the current active page url these are only ever saved in your browsers localstorage. Saving created aliases is optional
 you are able to disable the alias page and thus the saving of aliases to localstorage. To do this go to the settings tab and toggle (Disable Alias Storing), 
