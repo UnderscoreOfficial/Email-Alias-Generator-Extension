@@ -11,15 +11,22 @@ export default function Home() {
   const [active_tab, setActiveTab] = useState(default_tab);
   const {colorScheme} = useMantineColorScheme();
   const [disable_storing_aliases] = useStorage("disable_storing_aliases", false);
-  const [domains] = useStorage("domains");
+  const [domains] = useStorage("domains", []);
   const [domains_msg_sent, setDomainsMsgSent] = useState(false);
+  const [domains_msg_disabled, setDomainsMsgDisabled] = useStorage("domain_msg_disabled", false);
+
   
   function activeTab(tab: string) {
     setActiveTab(tab);
   }
 
   function missingDomainsMsg() {
-    if (!domains && !domains_msg_sent) {
+    console.log(domains_msg_disabled);
+    if (!domains_msg_disabled && domains.length > 0) {
+      setDomainsMsgDisabled(true);
+    } 
+
+    if (!domains_msg_disabled && domains.length == 0 && !domains_msg_sent) {
       notifications.show({
         id: "missing-domains",
         title: "Missing Domains!",

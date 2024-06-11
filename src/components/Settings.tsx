@@ -21,7 +21,7 @@ import { useState } from "react";
 
 export default function Settings() {
   const [domain_collapse, setDomainCollapse] = useDisclosure(false);
-  const [domains, setDomains] = useStorage("domains"); 
+  const [domains, setDomains] = useStorage("domains", []); 
   const [domain_input, setDomainInput] = useState("");
 
   const [group_collapse, setGroupCollapse] = useDisclosure(false);
