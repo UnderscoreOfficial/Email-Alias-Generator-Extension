@@ -7,9 +7,10 @@ import { generateAlias } from "~utils/generatedAlias";
 
 type Props = {
   setActiveTab(tab: string): void,
+  active_tab: string
 }
 
-export default function CreateAlias({ setActiveTab }: Props) {
+export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   const [domains] = useStorage("domains");
   const [groups] = useStorage("groups");
   const [url] = useStorage("url");
@@ -41,7 +42,7 @@ export default function CreateAlias({ setActiveTab }: Props) {
   const [form_data, setFormData] = useState({});
 
   const form = useForm({
-    mode: "controlled",
+    mode: "uncontrolled",
     initialValues: { ...saved_settings },
   });
 
@@ -94,8 +95,14 @@ export default function CreateAlias({ setActiveTab }: Props) {
   }
 
   useEffect(() => {
-    loadSettings();
-  }, [saved_settings]);
+    aliasPreview(true);
+  }, [url]);
+
+  useEffect(() => {
+    if (active_tab == "" || active_tab == "create") {
+      loadSettings();
+    }
+  }, [saved_settings, active_tab]);
 
   return (
     <Box>

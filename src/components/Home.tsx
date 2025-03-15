@@ -10,7 +10,6 @@ export default function Home() {
   const [active_tab, setActiveTab] = useState(default_tab);
   const { colorScheme } = useMantineColorScheme();
   const [disable_storing_aliases] = useStorage("disable_storing_aliases", false);
-  //const [domains_msg_disabled, setDomainsMsgDisabled] = useStorage("domain_msg_disabled", false);
 
   return (
     <Tabs value={active_tab || default_tab || "aliases"} onChange={setActiveTab} className="relative">
@@ -45,7 +44,7 @@ export default function Home() {
       <Tabs.Panel value="create" className="absolute top-12">
         <ScrollArea h={536} w={400} type="scroll" scrollHideDelay={750}>
           <div>
-            <CreateAlias setActiveTab={setActiveTab}></CreateAlias>
+            <CreateAlias setActiveTab={setActiveTab} active_tab={active_tab}></CreateAlias>
           </div>
         </ScrollArea>
       </Tabs.Panel>

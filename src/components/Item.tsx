@@ -1,6 +1,7 @@
 import { Paper, ActionIcon, CopyButton, Center, Tooltip, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useStorage, type RawKey } from "@plasmohq/storage/hook";
+import type { SavedSettings } from "~utils/localstorage_types";
 
 type Props = {
   name: string,
@@ -10,6 +11,27 @@ type Props = {
 
 export default function Item({ name, id, type }: Props) {
   const [data, setData] = useStorage(id);
+  const [saved_settings, setSavedSettings] = useStorage<SavedSettings>("saved_settings", undefined);
+
+  function updateSettings(name: string) {
+    if (!saved_settings) return;
+    let setting = "";
+    switch (type) {
+      case "Domain":
+        setting = "base_domain";
+        break;
+      case "Group":
+        setting = "group";
+        break;
+      default:
+        return;
+    }
+    if (saved_settings[setting] == name) {
+      const temp_settings = JSON.parse(JSON.stringify(saved_settings));
+      temp_settings[setting] = "";
+      setSavedSettings(temp_settings);
+    }
+  }
 
   function copyHandler(copy: () => void) {
     copy();
@@ -24,6 +46,7 @@ export default function Item({ name, id, type }: Props) {
   function deleteHandler(name: string) {
     if (data) {
       setData(data.filter((v: string) => v != name));
+      updateSettings(name);
     }
     notifications.show({
       message: `${type} was deleted.`,
