@@ -13,36 +13,38 @@
     "build:firefox": "tsc && plasmo build --zip --hoist --target=firefox-mv3"
   },
   "dependencies": {
-    "@mantine/core": "^7.9.2",
-    "@mantine/form": "^7.9.2",
-    "@mantine/hooks": "^7.9.2",
-    "@mantine/notifications": "^7.9.2",
-    "@plasmohq/storage": "^1.10.0",
-    "@types/firefox-webext-browser": "^120.0.3",
-    "plasmo": "0.86.3",
+    "@mantine/core": "^7.17.2",
+    "@mantine/form": "^7.17.2",
+    "@mantine/hooks": "^7.17.2",
+    "@mantine/notifications": "^7.17.2",
+    "@plasmohq/storage": "^1.15.0",
+    "@tailwindcss/postcss": "^4.0.14",
+    "@types/firefox-webext-browser": "^120.0.4",
+    "plasmo": "0.90.3",
     "random-words": "^2.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.51.4",
+    "react-hook-form": "^7.54.2",
     "secure": "link:@plasmohq/storage/secure",
-    "tailwindcss": "3.4.1",
-    "tldts": "^6.1.20"
+    "svgo": "2.8.0",
+    "tldts": "^6.1.84"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
-    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
-    "@types/chrome": "0.0.258",
-    "@types/node": "20.11.5",
-    "@types/react": "18.2.48",
-    "@types/react-dom": "18.2.18",
+    "@ianvs/prettier-plugin-sort-imports": "4.4.1",
+    "@types/chrome": "0.0.309",
+    "@types/node": "22.13.10",
+    "@types/react": "18.2.7",
+    "@types/react-dom": "18.2.7",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^16.0.0",
-    "postcss": "8.4.33",
-    "postcss-preset-mantine": "^1.15.0",
+    "postcss": "8.5.3",
+    "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "prettier": "3.2.4",
-    "typescript": "5.3.3",
+    "prettier": "3.5.3",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.8.2",
     "typescript-eslint": "^8.26.1"
   },
   "manifest": {
@@ -52,6 +54,21 @@
     "browser_specific_settings": {
       "gecko": {
         "id": "{ba596a7d-1393-4312-9a0a-69c47ebfd05c}"
+      }
+    }
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@swc/core",
+      "sharp"
+    ],
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "sharp"
+    ],
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "svgo": "2.8.0"
       }
     }
   }

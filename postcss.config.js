@@ -1,7 +1,7 @@
 /**
  * @type {import('postcss').ProcessOptions}
  */
-module.exports = {
+export default {
   plugins: {
     tailwindcss: {},
     'postcss-preset-mantine': {},
@@ -15,4 +15,4 @@ module.exports = {
       },
     }
   }
-}
+};
