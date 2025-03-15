@@ -15,5 +15,12 @@
       ]
     },
     "baseUrl": "."
-  }
+  },
+  "strict": true,
+  "noPropertyAccessFromIndexSignature": true,
+  "noUncheckedIndexedAccess": true,
+  "exactOptionalPropertyTypes": true,
+  "noFallthroughCasesInSwitch": true,
+  "noImplicitOverride": true,
+  "esModuleInterop": true
 }

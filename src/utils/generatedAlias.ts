@@ -1,7 +1,7 @@
 import { parse } from "tldts";
 import { generate } from "random-words";
 
-export function generateAlias({base_domain, random, current_domain, prefix, suffix, group, separators, counts, url}) {
+export function generateAlias({ base_domain, random, current_domain, prefix, suffix, group, separators, counts, url }) {
   if (!base_domain || !base_domain.trim()) {
     return "";
   }
@@ -18,27 +18,27 @@ export function generateAlias({base_domain, random, current_domain, prefix, suff
   }
 
   function formatRandom() {
-    switch(random) {
+    switch (random) {
       case "Random Characters":
         return randomString(counts["Character Count"]);
       case "Random Words":
-        return generate({exactly: counts["Word Count"], join: separators["Word Inner Separator"]});
+        return generate({ exactly: counts["Word Count"], join: separators["Word Inner Separator"] });
       default:
         return "";
     }
   }
 
   function formatDomain() {
-    let _url = parse(url);
+    const _url = parse(url);
     if (!_url.domain && current_domain != "None") {
       let _formated = url.replace(/:\/\/|:/g, separators["Domain Inner Separator"]).replace("#", "");
       try {
-       _formated = _formated.split("/")[0];
-      } catch (e) {};
+        _formated = _formated.split("/")[0];
+      } catch (e) { console.error(e); };
 
       return `${_formated}`;
     }
-    switch(current_domain) {
+    switch (current_domain) {
       case "Base Domain":
         return `${_url?.domain.replace(".", separators["Domain Inner Separator"])}`;
       case "Domain":
@@ -57,26 +57,26 @@ export function generateAlias({base_domain, random, current_domain, prefix, suff
     const _random = formatRandom();
     const _suffix = suffix.trim(); // has separator (unique)
     const _bdomain = base_domain.trim();
-  
+
     let _generated = "";
 
     // ugh I really cannot think of a better way of doing this while accounting for customizable separators / fields and avoiding duplicate separators
     if (_prefix.length) {
-      if (_group.length || _cdomain.length || _random.length || _suffix.length)  {
+      if (_group.length || _cdomain.length || _random.length || _suffix.length) {
         _generated += `${_prefix}${separators["Prefix Separator"]}`;
       } else {
         _generated += _prefix;
       }
     }
     if (_group.length) {
-      if (_cdomain.length || _random.length || _suffix.length)  {
+      if (_cdomain.length || _random.length || _suffix.length) {
         _generated += `${_group}${separators["Group Separator"]}`;
       } else {
         _generated += _group;
       }
     }
     if (_cdomain.length) {
-      if (_random.length || _suffix.length)  {
+      if (_random.length || _suffix.length) {
         _generated += `${_cdomain}${separators["Domain Separator"]}`;
       } else {
         _generated += _cdomain;
@@ -86,14 +86,14 @@ export function generateAlias({base_domain, random, current_domain, prefix, suff
       _generated += _random;
     }
     if (_suffix.length) {
-      if (_random.length)  {
+      if (_random.length) {
         _generated += `${separators["Suffix Separator"]}${_suffix}`;
       } else {
         _generated += _suffix;
       }
     }
 
-    let _final = `${_generated}@${_bdomain}`;
+    const _final = `${_generated}@${_bdomain}`;
 
     return _final;
   }
