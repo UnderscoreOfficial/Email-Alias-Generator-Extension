@@ -93,7 +93,7 @@ export default function Settings() {
       }
       setGroupInput("");
     }
-    if (!group_collapse && !group.length) {
+    if (!group_collapse || !group.length) {
       setGroupCollapse.toggle();
     }
   }
