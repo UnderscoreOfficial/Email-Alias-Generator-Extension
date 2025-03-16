@@ -15,6 +15,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   const [groups] = useStorage("groups");
   const [url] = useStorage("url");
   const [aliases, setAliases] = useStorage("aliases", []);
+  const [reverse_alias_order] = useStorage("reverse_alias_order", false);
   const [saved_settings, setSavedSettings] = useStorage("saved_settings", {
     base_domain: "",
     random: "Random Characters",
@@ -49,7 +50,11 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   function handleSubmit() {
     if (!disable_storing_aliases) {
       if (!aliases.includes(generated_alias)) {
-        setAliases([...aliases, generated_alias]);
+        if (reverse_alias_order) {
+          setAliases([...aliases, generated_alias]);
+        } else {
+          setAliases([generated_alias, ...aliases]);
+        }
         setActiveTab("aliases");
       } else {
         notifications.show({

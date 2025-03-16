@@ -4,7 +4,7 @@ import Item from "./Item";
 import { useState } from "react";
 
 export default function ListAliases() {
-  const [aliases] = useStorage("aliases", []);
+  const [aliases] = useStorage<[]>("aliases", []);
   const [search, setSearch] = useState("");
 
   return (
@@ -18,7 +18,7 @@ export default function ListAliases() {
       >
       </TextInput>
       <Flex className="m-4 flex-col gap-2">
-        {aliases?.filter((i) => i.toLowerCase().includes(search.toLowerCase())).map((name: string) => <Item name={name} id={"aliases"} type={"Alias"} key={name}></Item>)}
+        {aliases?.filter((i: string) => i.toLowerCase().includes(search.toLowerCase())).map((name: string) => <Item name={name} id={"aliases"} type={"Alias"} key={name}></Item>)}
       </Flex>
     </Box>
   );

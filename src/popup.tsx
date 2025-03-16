@@ -22,18 +22,46 @@ export default function IndexPopup() {
   const [mouse_entered, setMouseEntered] = useState(false);
   const [domains_msg_sent, setDomainsMsgSent] = useState(false);
 
+  const [reverse_alias_order, setReverseAliasOrder] = useStorage("reverse_alias_order", undefined);
+  const [aliases, setAliases] = useStorage<string[]>("aliases", undefined);
+
+
+  function getVersion() {
+    try {
+      return parseFloat(browser.runtime.getManifest().version);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      return parseFloat(chrome.runtime.getManifest().version);
+    }
+  }
+
+
+  // migrate old alias lists to the new default order
+  useEffect(() => {
+    const version = getVersion();
+    if (reverse_alias_order === undefined && Array.isArray(aliases) && aliases.length > 0) {
+      setAliases(aliases.reverse());
+      setReverseAliasOrder(false);
+    }
+  }, [reverse_alias_order, aliases]);
+
 
   function missingDomainsMsg() {
-    if (domains && domains.length < 1 && !domains_msg_sent && previous_domains_length == 0) {
-      notifications.show({
-        id: "missing-domains",
-        title: "Missing Domains!",
-        message: `You have no domains added go to settings to add some.`,
-        withBorder: true,
-        color: "yellow",
-        autoClose: false,
-      });
-      setDomainsMsgSent(true);
+    if (domains && domains.length > 0) {
+      setPrevousDomainsLength(domains.length);
+    }
+    if (domains && domains.length < 1 || !domains) {
+      if (!domains_msg_sent && previous_domains_length == 0) {
+        notifications.show({
+          id: "missing-domains",
+          title: "Missing Domains!",
+          message: `You have no domains added go to settings to add some.`,
+          withBorder: true,
+          color: "yellow",
+          autoClose: false,
+        });
+        setDomainsMsgSent(true);
+      }
     }
   }
 
@@ -41,9 +69,6 @@ export default function IndexPopup() {
   // this fix should make sure missing-domains warning only shows on opening the extension with no domains
   useEffect(() => {
     if (mouse_entered) {
-      if (domains && domains.length > 0) {
-        setPrevousDomainsLength(domains.length);
-      }
       missingDomainsMsg();
     }
   }, [mouse_entered, domains]);

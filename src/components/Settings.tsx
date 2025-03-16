@@ -33,7 +33,9 @@ export default function Settings() {
 
   const [default_tab, setDefaultTab] = useStorage("default_tab", "aliases");
 
+  const [reverse_alias_order, setReverseAliasOrder] = useStorage("reverse_alias_order", false);
   const [disable_storing_aliases, setDisableStoringAliases] = useStorage("disable_storing_aliases", false);
+  const [aliases, setAliases] = useStorage<string[]>("aliases", undefined);
 
   const [separator, setSeparator] = useState("Group Separator");
   const [separators, setSeparators] = useStorage("separators", {
@@ -117,6 +119,14 @@ export default function Settings() {
     }
   }
 
+  function changeAliasOrder() {
+    if (!reverse_alias_order) setReverseAliasOrder(false);
+    setReverseAliasOrder(!reverse_alias_order);
+    if (aliases) {
+      setAliases(aliases.reverse());
+    }
+  }
+
   function changeDisablingAliases() {
     if (!disable_storing_aliases) setDisableStoringAliases(false);
     setDisableStoringAliases(!disable_storing_aliases);
@@ -155,8 +165,13 @@ export default function Settings() {
       </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
+        <Center>Reverse Aliases Order</Center>
+        <Switch checked={reverse_alias_order} onChange={changeAliasOrder} className="inline-block" size="xl" onLabel="Enabled" offLabel="Disabled"></Switch>
+      </section>
+      <Divider className="ml-4 mr-4"></Divider>
+      <section className="m-4 mb-3 mt-3 flex justify-between">
         <Center>Disable Alias Storing</Center>
-        <Switch checked={disable_storing_aliases} onChange={changeDisablingAliases} className="inline-block" size="xl" onLabel="Disabled" offLabel="Enabled"></Switch>
+        <Switch checked={disable_storing_aliases} onChange={changeDisablingAliases} className="inline-block" size="xl" onLabel="Enabled" offLabel="Disabled"></Switch>
       </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 flex justify-between">

@@ -44,7 +44,7 @@ export function generateAlias({ base_domain, random, current_domain, prefix, suf
       case "Domain":
         return `${_url?.domainWithoutSuffix.replace(".", separators["Domain Inner Separator"])}`;
       case "Full Domain":
-        return `${_url?.hostname.replace(".", separators["Domain Inner Separator"])}`;
+        return `${_url?.hostname.replaceAll(".", separators["Domain Inner Separator"])}`;
       default:
         return "";
     }
