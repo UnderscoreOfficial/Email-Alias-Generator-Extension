@@ -1,7 +1,20 @@
 import { parse } from "tldts";
 import { generate } from "random-words";
+import type { Counts, Separators, Url } from "./localstorage_types";
 
-export function generateAlias({ base_domain, random, current_domain, prefix, suffix, group, separators, counts, url }) {
+type Params = {
+  base_domain: string,
+  random: string,
+  current_domain: string,
+  prefix: string,
+  suffix: string,
+  group: string,
+  separators: Separators,
+  counts: Counts,
+  url: Url
+}
+
+export function generateAlias({ base_domain, random, current_domain, prefix, suffix, group, separators, counts, url }: Params) {
   if (!base_domain || !base_domain.trim()) {
     return "";
   }
@@ -10,7 +23,7 @@ export function generateAlias({ base_domain, random, current_domain, prefix, suf
     let _string = "";
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let i = 0;
-    while (i <= length) {
+    while (i < length) {
       _string += characters.charAt(Math.floor(Math.random() * characters.length));
       i += 1;
     }
@@ -29,22 +42,23 @@ export function generateAlias({ base_domain, random, current_domain, prefix, suf
   }
 
   function formatDomain() {
+    if (!url) return;
     const _url = parse(url);
     if (!_url.domain && current_domain != "None") {
       let _formated = url.replace(/:\/\/|:/g, separators["Domain Inner Separator"]).replace("#", "");
       try {
-        _formated = _formated.split("/")[0];
+        _formated = _formated.split("/")[0] || _formated;
       } catch (e) { console.error(e); };
 
       return `${_formated}`;
     }
     switch (current_domain) {
       case "Base Domain":
-        return `${_url?.domain.replace(".", separators["Domain Inner Separator"])}`;
+        return `${_url?.domain?.replace(".", separators["Domain Inner Separator"])}`;
       case "Domain":
-        return `${_url?.domainWithoutSuffix.replace(".", separators["Domain Inner Separator"])}`;
+        return `${_url?.domainWithoutSuffix?.replace(".", separators["Domain Inner Separator"])}`;
       case "Full Domain":
-        return `${_url?.hostname.replaceAll(".", separators["Domain Inner Separator"])}`;
+        return `${_url?.hostname?.replaceAll(".", separators["Domain Inner Separator"])}`;
       default:
         return "";
     }
@@ -53,7 +67,7 @@ export function generateAlias({ base_domain, random, current_domain, prefix, suf
   function formated() {
     const _prefix = prefix.trim(); // has separator
     const _group = group.trim(); // has separator
-    const _cdomain = formatDomain(); // has separator
+    const _cdomain = formatDomain() || ""; // has separator
     const _random = formatRandom();
     const _suffix = suffix.trim(); // has separator (unique)
     const _bdomain = base_domain.trim();

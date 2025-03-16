@@ -1,5 +1,9 @@
 {
-  "extends": "plasmo/templates/tsconfig.base",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Email Alias Generator Extension",
+  "files": [
+    "./plasmo.d.ts"
+  ],
   "exclude": [
     "node_modules"
   ],
@@ -9,18 +13,40 @@
     "./**/*.tsx"
   ],
   "compilerOptions": {
+    "strict": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "skipLibCheck": true,
     "paths": {
       "~*": [
         "./src/*"
       ]
     },
-    "baseUrl": "."
+    "baseUrl": ".",
+    "target": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "resolveJsonModule": true,
+    "declaration": false,
+    "declarationMap": false,
+    "inlineSources": false,
+    "moduleResolution": "node",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveWatchOutput": true,
+    "verbatimModuleSyntax": true,
+    "jsx": "preserve"
   },
-  "strict": true,
-  "noPropertyAccessFromIndexSignature": true,
-  "noUncheckedIndexedAccess": true,
-  "exactOptionalPropertyTypes": true,
-  "noFallthroughCasesInSwitch": true,
-  "noImplicitOverride": true,
-  "esModuleInterop": true
 }

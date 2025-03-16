@@ -7,6 +7,7 @@ import "~style.css";
 import { useEffect, useState } from "react";
 import { useStorage } from "@plasmohq/storage/hook";
 import { notifications } from "@mantine/notifications";
+import type { Aliases, Domains, ReverseAliasOrder, Url } from "~utils/localstorage_types";
 
 const theme: MantineThemeOverride = createTheme({
   primaryColor: "grape",
@@ -16,14 +17,13 @@ const theme: MantineThemeOverride = createTheme({
 });
 
 export default function IndexPopup() {
-  const [, setUrl] = useStorage("url", "");
-  const [domains] = useStorage("domains", undefined);
+  const [, setUrl] = useStorage<Url>("url", undefined);
+  const [domains] = useStorage<Domains>("domains", undefined);
   const [previous_domains_length, setPrevousDomainsLength] = useState(0);
   const [mouse_entered, setMouseEntered] = useState(false);
   const [domains_msg_sent, setDomainsMsgSent] = useState(false);
-
-  const [reverse_alias_order, setReverseAliasOrder] = useStorage("reverse_alias_order", undefined);
-  const [aliases, setAliases] = useStorage<string[]>("aliases", undefined);
+  const [reverse_alias_order, setReverseAliasOrder] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
+  const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
 
 
   function getVersion() {
@@ -36,9 +36,10 @@ export default function IndexPopup() {
   }
 
 
-  // migrate old alias lists to the new default order
+  // migrate old aliases list to the new default order
   useEffect(() => {
     const version = getVersion();
+    console.log(version);
     if (reverse_alias_order === undefined && Array.isArray(aliases) && aliases.length > 0) {
       setAliases(aliases.reverse());
       setReverseAliasOrder(false);
@@ -76,11 +77,11 @@ export default function IndexPopup() {
   async function currentUrl() {
     try {
       const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-      return tab.url;
+      return tab?.url;
     } catch (e) {
       console.error(e);
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      return tab.url;
+      return tab?.url;
     }
   }
 

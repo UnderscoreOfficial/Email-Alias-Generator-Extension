@@ -18,27 +18,38 @@ import { useDisclosure } from "@mantine/hooks";
 import { useStorage } from "@plasmohq/storage/hook";
 import Item from "./Item";
 import { useState } from "react";
+import type {
+  Aliases,
+  Counts,
+  DefaultTab,
+  DisableStoringAliases,
+  Domains,
+  Groups,
+  ReverseAliasOrder,
+  Separators,
+  Theme
+} from "~utils/localstorage_types";
 
 export default function Settings() {
   const [domain_collapse, setDomainCollapse] = useDisclosure(false);
-  const [domains, setDomains] = useStorage("domains", []);
+  const [domains, setDomains] = useStorage<Domains>("domains", undefined);
   const [domain_input, setDomainInput] = useState("");
 
   const [group_collapse, setGroupCollapse] = useDisclosure(false);
-  const [groups, setGroups] = useStorage("groups");
+  const [groups, setGroups] = useStorage<Groups>("groups");
   const [group_input, setGroupInput] = useState("");
 
   const { setColorScheme } = useMantineColorScheme();
-  const [theme, setTheme] = useStorage("theme", false);
+  const [theme, setTheme] = useStorage<Theme>("theme", false);
 
-  const [default_tab, setDefaultTab] = useStorage("default_tab", "aliases");
+  const [default_tab, setDefaultTab] = useStorage<DefaultTab>("default_tab", "aliases");
 
-  const [reverse_alias_order, setReverseAliasOrder] = useStorage("reverse_alias_order", false);
-  const [disable_storing_aliases, setDisableStoringAliases] = useStorage("disable_storing_aliases", false);
-  const [aliases, setAliases] = useStorage<string[]>("aliases", undefined);
+  const [reverse_alias_order, setReverseAliasOrder] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
+  const [disable_storing_aliases, setDisableStoringAliases] = useStorage<DisableStoringAliases>("disable_storing_aliases", undefined);
+  const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
 
   const [separator, setSeparator] = useState("Group Separator");
-  const [separators, setSeparators] = useStorage("separators", {
+  const [separators, setSeparators] = useStorage<Separators>("separators", {
     "Group Separator": ".",
     "Domain Separator": "_",
     "Domain Inner Separator": ".",
@@ -48,7 +59,7 @@ export default function Settings() {
   });
 
   const [count, setCount] = useState("Character Count");
-  const [counts, setCounts] = useStorage("counts", {
+  const [counts, setCounts] = useStorage<Counts>("counts", {
     "Character Count": 6,
     "Word Count": 3
   });
@@ -111,11 +122,13 @@ export default function Settings() {
   }
 
   function changeDefaultTab() {
-    if (!default_tab.length) setDefaultTab("aliases");
-    if (default_tab == "create") {
-      setDefaultTab("aliases");
-    } else {
-      setDefaultTab("create");
+    if (default_tab) {
+      if (!default_tab.length) setDefaultTab("aliases");
+      if (default_tab == "create") {
+        setDefaultTab("aliases");
+      } else {
+        setDefaultTab("create");
+      }
     }
   }
 
@@ -139,7 +152,9 @@ export default function Settings() {
 
   function changeSeparator(value: React.ChangeEvent<HTMLInputElement>) {
     const temp_separators = { ...separators };
-    temp_separators[separator] = value.target.value;
+    if (separator in separators) {
+      temp_separators[separator as keyof typeof separators] = value.target.value;
+    }
     setSeparators(temp_separators);
   }
 
@@ -149,9 +164,25 @@ export default function Settings() {
 
   function changeCount(value: string | number) {
     const temp_counts = { ...counts };
-    temp_counts[count] = Number(value);
+    if (count in counts) {
+      temp_counts[count as keyof typeof counts] = Number(value);
+    }
     setCounts(temp_counts);
   }
+
+  function getSeparator() {
+    if (separator in separators) {
+      return separators[separator as keyof typeof separators];
+    }
+  }
+
+  function getCount() {
+    if (count in counts) {
+      return counts[count as keyof typeof counts];
+    }
+    return 0;
+  }
+
   return (
     <Box>
       <section className="m-4 mb-3 mt-3 flex justify-between">
@@ -182,13 +213,13 @@ export default function Settings() {
             className="mb-2"
             size="sm"
             value={separator}
-            onChange={setSeparatorSelect}
+            onChange={(value) => value ? setSeparatorSelect(value) : null}
             comboboxProps={{ position: "bottom", middlewares: { flip: false, shift: false } }}
             data={["Group Separator", "Domain Separator", "Domain Inner Separator", "Prefix Separator", "Suffix Separator", "Word Inner Separator"]}
           />
           <TextInput
             size="sm"
-            value={separators[separator]}
+            value={getSeparator()}
             onChange={changeSeparator}
           />
         </section>
@@ -202,14 +233,14 @@ export default function Settings() {
             className="mb-2"
             size="sm"
             value={count}
-            onChange={setCountSelect}
+            onChange={(value) => value ? setCountSelect(value) : null}
             comboboxProps={{ position: "bottom", middlewares: { flip: false, shift: false } }}
             data={["Character Count", "Word Count"]}
           />
           <NumberInput
             size="sm"
             min={1}
-            value={counts[count]}
+            value={getCount()}
             onChange={changeCount}
           />
         </section>

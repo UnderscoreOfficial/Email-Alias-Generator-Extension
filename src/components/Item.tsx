@@ -26,10 +26,12 @@ export default function Item({ name, id, type }: Props) {
       default:
         return;
     }
-    if (saved_settings[setting] == name) {
-      const temp_settings = JSON.parse(JSON.stringify(saved_settings));
-      temp_settings[setting] = "";
-      setSavedSettings(temp_settings);
+    if (setting in saved_settings) {
+      if (saved_settings[setting as keyof typeof saved_settings] == name) {
+        const temp_settings = JSON.parse(JSON.stringify(saved_settings));
+        temp_settings[setting] = "";
+        setSavedSettings(temp_settings);
+      }
     }
   }
 

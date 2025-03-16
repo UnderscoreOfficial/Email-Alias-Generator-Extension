@@ -3,20 +3,21 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useStorage } from "@plasmohq/storage/hook";
 import { useEffect, useState } from "react";
-import { generateAlias } from "~utils/generatedAlias";
+import { generateAlias } from "~utils/generated_alias";
+import type { Aliases, Domains, Groups, ReverseAliasOrder, SavedSettings, Url } from "~utils/localstorage_types";
 
 type Props = {
   setActiveTab(tab: string): void,
-  active_tab: string
+  active_tab: string | undefined
 }
 
 export default function CreateAlias({ setActiveTab, active_tab }: Props) {
-  const [domains] = useStorage("domains");
-  const [groups] = useStorage("groups");
-  const [url] = useStorage("url");
-  const [aliases, setAliases] = useStorage("aliases", []);
-  const [reverse_alias_order] = useStorage("reverse_alias_order", false);
-  const [saved_settings, setSavedSettings] = useStorage("saved_settings", {
+  const [domains] = useStorage<Domains>("domains");
+  const [groups] = useStorage<Groups>("groups");
+  const [url] = useStorage<Url>("url");
+  const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
+  const [reverse_alias_order] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
+  const [saved_settings, setSavedSettings] = useStorage<SavedSettings>("saved_settings", {
     base_domain: "",
     random: "Random Characters",
     current_domain: "Base Domain",
@@ -44,11 +45,18 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
 
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: { ...saved_settings },
+    initialValues: {
+      base_domain: saved_settings?.base_domain || "",
+      random: saved_settings?.random || "",
+      current_domain: saved_settings?.current_domain || "",
+      prefix: saved_settings?.prefix || "",
+      suffix: saved_settings?.suffix || "",
+      group: saved_settings?.group || "",
+    },
   });
 
   function handleSubmit() {
-    if (!disable_storing_aliases) {
+    if (!disable_storing_aliases && aliases) {
       if (!aliases.includes(generated_alias)) {
         if (reverse_alias_order) {
           setAliases([...aliases, generated_alias]);
@@ -79,14 +87,16 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
     const current_form = form.getValues();
     if (form_data !== current_form || refresh) {
       setFormData(current_form);
-      const _alias = generateAlias({ ...current_form, separators: separators, counts: counts, url: url });
+      const _alias = generateAlias({ ...current_form, separators, counts, url });
       setAlias(_alias);
     }
   }
 
   function loadSettings() {
-    form.setValues(saved_settings);
-    aliasPreview(false);
+    if (saved_settings) {
+      form.setValues(saved_settings);
+      aliasPreview(false);
+    }
   }
 
   function saveSettings() {
@@ -106,7 +116,9 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   useEffect(() => {
     if (active_tab == "" || active_tab == "create") {
       loadSettings();
+      console.log("LOADING SETTINGS");
     }
+    console.log(active_tab);
   }, [saved_settings, active_tab]);
 
   return (
@@ -119,7 +131,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
             maxDropdownHeight={134}
             key={form.key("base_domain")}
             data={domains || []}
-            searchable={domains && domains.length > 1}
+            searchable={domains && domains.length > 1 || false}
             comboboxProps={{ position: "bottom", middlewares: { flip: false, shift: false } }}
             {...form.getInputProps("base_domain")}
           />
