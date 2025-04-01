@@ -1,4 +1,4 @@
-# Email Alias Generator Extension
+# EAG: Email Alias Generator Extension
 
 An extension for use with a catch all email service / inbox. This provides a quick way to make email alias
 addresses with flexibility of the generated alias while not being tied down to any specific platform or service.
@@ -10,8 +10,9 @@ I wanted something similar in ease of use equal to how password managers generat
 
 ## Screenshots
 
-![Alias](./assets/alias-page.png)
 ![Create](./assets/create-page.png)
+![Settings](./assets/settings-page.png)
+![Alias](./assets/alias-page.png)
 
 ## Install
 

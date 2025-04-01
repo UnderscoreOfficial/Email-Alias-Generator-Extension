@@ -1,9 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Email Alias Generator Extension",
-  "files": [
-    "./plasmo.d.ts"
-  ],
   "exclude": [
     "node_modules"
   ],

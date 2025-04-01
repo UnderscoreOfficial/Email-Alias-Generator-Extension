@@ -42,8 +42,7 @@ export default function Settings() {
   const { setColorScheme } = useMantineColorScheme();
   const [theme, setTheme] = useStorage<Theme>("theme", false);
 
-  const [default_tab, setDefaultTab] = useStorage<DefaultTab>("default_tab", "aliases");
-
+  const [default_tab, setDefaultTab] = useStorage<DefaultTab>("default_tab", undefined);
   const [reverse_alias_order, setReverseAliasOrder] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
   const [disable_storing_aliases, setDisableStoringAliases] = useStorage<DisableStoringAliases>("disable_storing_aliases", undefined);
   const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
@@ -64,7 +63,10 @@ export default function Settings() {
     "Word Count": 3
   });
 
+  const is_mobile = /Mobile/.test(navigator.userAgent);
+
   function domainHandler() {
+    if (!aliases) setAliases([]);
     const domain = domain_input.trim();
     if (domain.length) {
       if (domains) {
@@ -122,13 +124,16 @@ export default function Settings() {
   }
 
   function changeDefaultTab() {
-    if (default_tab) {
-      if (!default_tab.length) setDefaultTab("aliases");
-      if (default_tab == "create") {
-        setDefaultTab("aliases");
-      } else {
-        setDefaultTab("create");
-      }
+    if (!default_tab) {
+      setDefaultTab("create");
+      localStorage.setItem("default_tab", "create");
+    }
+    if (default_tab == "create") {
+      setDefaultTab("aliases");
+      localStorage.setItem("default_tab", "aliases");
+    } else {
+      setDefaultTab("create");
+      localStorage.setItem("default_tab", "create");
     }
   }
 
@@ -144,6 +149,7 @@ export default function Settings() {
     if (!disable_storing_aliases) setDisableStoringAliases(false);
     setDisableStoringAliases(!disable_storing_aliases);
     setDefaultTab("create");
+    localStorage.setItem("default_tab", "create");
   }
 
   function setSeparatorSelect(value: string) {
@@ -197,7 +203,7 @@ export default function Settings() {
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
         <Center>Reverse Aliases Order</Center>
-        <Switch checked={reverse_alias_order} onChange={changeAliasOrder} className="inline-block" size="xl" onLabel="Enabled" offLabel="Disabled"></Switch>
+        <Switch checked={reverse_alias_order} disabled={disable_storing_aliases} onChange={changeAliasOrder} className="inline-block" size="xl" onLabel="Enabled" offLabel="Disabled"></Switch>
       </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
@@ -218,6 +224,7 @@ export default function Settings() {
             data={["Group Separator", "Domain Separator", "Domain Inner Separator", "Prefix Separator", "Suffix Separator", "Word Inner Separator"]}
           />
           <TextInput
+            onSelect={(event) => is_mobile ? event.currentTarget.scrollIntoView({ block: "center" }) : ""}
             size="sm"
             value={getSeparator()}
             onChange={changeSeparator}
@@ -238,6 +245,7 @@ export default function Settings() {
             data={["Character Count", "Word Count"]}
           />
           <NumberInput
+            onSelect={(event) => is_mobile ? event.currentTarget.scrollIntoView({ block: "center" }) : ""}
             size="sm"
             min={1}
             value={getCount()}
@@ -250,6 +258,7 @@ export default function Settings() {
         <Center>Domains</Center>
         <Center className="relative">
           <TextInput
+            onSelect={(event) => is_mobile ? event.currentTarget.scrollIntoView({ block: "center" }) : ""}
             placeholder="Add new domain"
             size="sm"
             value={domain_input}
@@ -273,6 +282,7 @@ export default function Settings() {
         <Center>Groups</Center>
         <Center className="relative">
           <TextInput
+            onSelect={(event) => is_mobile ? event.currentTarget.scrollIntoView({ block: "center" }) : ""}
             placeholder="Add new group"
             size="sm"
             value={group_input}
@@ -293,7 +303,7 @@ export default function Settings() {
       </Collapse>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Version (0.1.2)</Center>
+        <Center>Version (1.0.0)</Center>
         <Center className="text-lg mr-2">
           Github
           <a href="https://github.com/UnderscoreOfficial/Email-Alias-Generator-Extension">

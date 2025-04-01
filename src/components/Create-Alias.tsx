@@ -43,6 +43,8 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   const [generated_alias, setAlias] = useState("");
   const [form_data, setFormData] = useState({});
 
+  const is_mobile = /Mobile/.test(navigator.userAgent);
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -56,6 +58,12 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   });
 
   function handleSubmit() {
+    console.table({
+      disable_storing_aliases: disable_storing_aliases,
+      aliases: aliases,
+      generated_alias: generated_alias,
+      reverse_alias_order: reverse_alias_order,
+    });
     if (!disable_storing_aliases && aliases) {
       if (!aliases.includes(generated_alias)) {
         if (reverse_alias_order) {
@@ -64,6 +72,9 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
           setAliases([generated_alias, ...aliases]);
         }
         setActiveTab("aliases");
+        if (is_mobile) {
+          window.scrollTo(0, 0);
+        }
       } else {
         notifications.show({
           message: `Alias already exists!`,
@@ -79,7 +90,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
       message: `Alias was copied to the clipboard.`,
       withBorder: true,
       color: "grape",
-      autoClose: 1000,
+      autoClose: 750,
     });
   }
 
@@ -116,9 +127,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   useEffect(() => {
     if (active_tab == "" || active_tab == "create") {
       loadSettings();
-      console.log("LOADING SETTINGS");
     }
-    console.log(active_tab);
   }, [saved_settings, active_tab]);
 
   return (
@@ -160,6 +169,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
         </div>
         <Box className="mb-4 flex justify-center gap-3">
           <TextInput
+            onSelect={(event) => is_mobile ? event.currentTarget.scrollIntoView({ block: "center" }) : ""}
             className="w-1/2"
             size="sm"
             label="Prefix"
@@ -167,6 +177,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
             {...form.getInputProps("prefix")}
           />
           <TextInput
+            onSelect={(event) => is_mobile ? event.currentTarget.scrollIntoView({ block: "center" }) : ""}
             className="w-1/2"
             size="sm"
             label="Suffix"
@@ -175,6 +186,14 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
           />
         </Box>
         <Autocomplete
+          onSelect={(event) => {
+            if (is_mobile) {
+              event.currentTarget.scrollIntoView({ block: "start" });
+              if (Number(window.innerHeight) < 720) {
+                window.scrollBy(0, -80);
+              }
+            }
+          }}
           className="mb-4"
           size="sm"
           label="Group"
@@ -199,7 +218,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
           </Tooltip>
         </section>
         <Flex className="justify-evenly gap-2">
-          <Button onClick={saveSettings} className="gray-button w-7/12" color="gray" type="button">Save Settings</Button>
+          <Button onClick={saveSettings} className="gray-button w-7/12 flex justify-center border-2" color="gray" type="button">Save Settings</Button>
           <Button disabled={generated_alias ? false : true} fullWidth className={generated_alias ? "purple-custom-bg" : "purple-custom-no-hover"} color="grape" type="submit">
             {disable_storing_aliases ? "Copy" : "Create"}
           </Button>

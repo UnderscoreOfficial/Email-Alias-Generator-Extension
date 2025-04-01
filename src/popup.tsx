@@ -1,6 +1,6 @@
 import Home from "~components/Home";
 import "@mantine/core/styles.css";
-import { MantineProvider, createTheme, RemoveScroll, type MantineThemeOverride } from "@mantine/core";
+import { MantineProvider, createTheme, RemoveScroll, type MantineThemeOverride, ScrollArea, TextInput } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import '@mantine/notifications/styles.css';
 import "~style.css";
@@ -25,27 +25,16 @@ export default function IndexPopup() {
   const [reverse_alias_order, setReverseAliasOrder] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
   const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
 
-
-  function getVersion() {
-    try {
-      return parseFloat(browser.runtime.getManifest().version);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return parseFloat(chrome.runtime.getManifest().version);
-    }
-  }
-
+  const is_mobile = /Mobile/.test(navigator.userAgent);
 
   // migrate old aliases list to the new default order
+  // hopefully no false positives tested it quite a bit.
   useEffect(() => {
-    const version = getVersion();
-    console.log(version);
     if (reverse_alias_order === undefined && Array.isArray(aliases) && aliases.length > 0) {
       setAliases(aliases.reverse());
       setReverseAliasOrder(false);
     }
   }, [reverse_alias_order, aliases]);
-
 
   function missingDomainsMsg() {
     if (domains && domains.length > 0) {
@@ -86,6 +75,12 @@ export default function IndexPopup() {
   }
 
   useEffect(() => {
+    if (is_mobile) {
+      const body = document.querySelector("body");
+      body?.classList.remove("desktop");
+      body?.classList.add("mobile");
+    }
+
     currentUrl().then((url) => {
       setUrl(url);
     });
@@ -93,11 +88,18 @@ export default function IndexPopup() {
 
   return (
     <MantineProvider theme={theme} defaultColorScheme="dark">
-      <Notifications zIndex={1000} />
-      <div style={{ height: 600, width: 400 }} className="" onMouseEnter={() => setMouseEntered(true)}>
-        <RemoveScroll>
-          <Home></Home>
-        </RemoveScroll>
+      <div onMouseEnter={() => setMouseEntered(true)} className="">
+        {is_mobile ?
+          <div className="w-full">
+            <Home />
+            <Notifications zIndex={10} />
+          </div>
+          :
+          <RemoveScroll className="w-[400px] h-[600px] overflow-hidden">
+            <Home />
+            <Notifications zIndex={10} />
+          </RemoveScroll>
+        }
       </div>
     </MantineProvider>
   );
