@@ -4,8 +4,8 @@ import type { Counts, Separators, Url } from "./localstorage_types";
 
 type Params = {
   base_domain: string,
-  random: string,
-  current_domain: string,
+  random: string[],
+  current_domain: string[],
   prefix: string,
   suffix: string,
   group: string,
@@ -31,43 +31,79 @@ export function generateAlias({ base_domain, random, current_domain, prefix, suf
   }
 
   function formatRandom() {
-    switch (random) {
-      case "Random Characters":
-        return randomString(counts["Character Count"]);
-      case "Random Words":
-        return generate({ exactly: counts["Word Count"], join: separators["Word Inner Separator"] });
-      default:
-        return "";
+    const random_values = [];
+    for (const random_type of random) {
+      switch (random_type) {
+        case "Characters":
+          random_values.push(randomString(counts["Character Count"]));
+          break;
+        case "Words":
+          random_values.push(generate({ exactly: counts["Word Count"], join: separators["Word Inner Separator"] }));
+          break;
+      }
     }
+    return random_values.join(separators["Word Inner Separator"]);
   }
 
-  function formatDomain() {
-    if (!url) return;
+  function formatCurrentDomain() {
+    if (!url) return "";
+    if (!current_domain) return "";
+
     const _url = parse(url);
-    if (!_url.domain && current_domain != "None") {
-      let _formated = url.replace(/:\/\/|:/g, separators["Domain Inner Separator"]).replace("#", "");
+
+    // for local browser urls like chrome://settings or about:preferences
+    if (!_url.domain && current_domain.length) {
+      let _formated = url.replace(/:\/\/|:/g, ".").replace("#", "");
       try {
         _formated = _formated.split("/")[0] || _formated;
       } catch (e) { console.error(e); };
+      const domain_parts = _formated.split(".");
 
-      return `${_formated}`;
+      const selected_domain_parts = [];
+      for (const url_selection in current_domain) {
+        switch (current_domain[url_selection]) {
+          case "Subdomain":
+            if (domain_parts[0]) {
+              selected_domain_parts.push(domain_parts[0]);
+            }
+            break;
+          case "Domain":
+            if (domain_parts[1]) {
+              selected_domain_parts.push(domain_parts[1]);
+            }
+            break;
+        }
+      }
+      return selected_domain_parts.join(separators["Domain Inner Separator"]);
     }
-    switch (current_domain) {
-      case "Base Domain":
-        return `${_url?.domain?.replace(".", separators["Domain Inner Separator"])}`;
-      case "Domain":
-        return `${_url?.domainWithoutSuffix?.replace(".", separators["Domain Inner Separator"])}`;
-      case "Full Domain":
-        return `${_url?.hostname?.replaceAll(".", separators["Domain Inner Separator"])}`;
-      default:
-        return "";
+
+    const selected_domain_parts = [];
+    for (const url_selection in current_domain) {
+      switch (current_domain[url_selection]) {
+        case "Subdomain":
+          if (_url.subdomain) {
+            selected_domain_parts.push(_url.subdomain);
+          }
+          break;
+        case "Domain":
+          if (_url.domainWithoutSuffix) {
+            selected_domain_parts.push(_url.domainWithoutSuffix);
+          }
+          break;
+        case "Top Level Domain":
+          if (_url.publicSuffix) {
+            selected_domain_parts.push(_url.publicSuffix);
+          }
+          break;
+      }
     }
+    return selected_domain_parts.join(separators["Domain Inner Separator"]);
   }
 
   function formated() {
     const _prefix = prefix.trim(); // has separator
     const _group = group.trim(); // has separator
-    const _cdomain = formatDomain() || ""; // has separator
+    const _current_domain = formatCurrentDomain() || ""; // has separator
     const _random = formatRandom();
     const _suffix = suffix.trim(); // has separator (unique)
     const _bdomain = base_domain.trim();
@@ -76,24 +112,24 @@ export function generateAlias({ base_domain, random, current_domain, prefix, suf
 
     // ugh I really cannot think of a better way of doing this while accounting for customizable separators / fields and avoiding duplicate separators
     if (_prefix.length) {
-      if (_group.length || _cdomain.length || _random.length || _suffix.length) {
+      if (_group.length || _current_domain.length || _random.length || _suffix.length) {
         _generated += `${_prefix}${separators["Prefix Separator"]}`;
       } else {
         _generated += _prefix;
       }
     }
     if (_group.length) {
-      if (_cdomain.length || _random.length || _suffix.length) {
+      if (_current_domain.length || _random.length || _suffix.length) {
         _generated += `${_group}${separators["Group Separator"]}`;
       } else {
         _generated += _group;
       }
     }
-    if (_cdomain.length) {
+    if (_current_domain.length) {
       if (_random.length || _suffix.length) {
-        _generated += `${_cdomain}${separators["Domain Separator"]}`;
+        _generated += `${_current_domain}${separators["Domain Separator"]}`;
       } else {
-        _generated += _cdomain;
+        _generated += _current_domain;
       }
     }
     if (_random.length) {

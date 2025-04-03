@@ -1,10 +1,11 @@
-import { Box, Flex, TextInput, Button, Select, Autocomplete, ActionIcon, Tooltip } from "@mantine/core";
+import { Box, Flex, TextInput, Button, Select, Autocomplete, ActionIcon, Tooltip, MultiSelect } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useStorage } from "@plasmohq/storage/hook";
 import { useEffect, useState } from "react";
 import { generateAlias } from "~utils/generated_alias";
 import type { Aliases, Domains, Groups, ReverseAliasOrder, SavedSettings, Url } from "~utils/localstorage_types";
+import { default_counts, default_separators } from "~utils/localstorage_types";
 
 type Props = {
   setActiveTab(tab: string): void,
@@ -19,25 +20,15 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   const [reverse_alias_order] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
   const [saved_settings, setSavedSettings] = useStorage<SavedSettings>("saved_settings", {
     base_domain: "",
-    random: "Random Characters",
-    current_domain: "Base Domain",
+    random: ["Characters"],
+    current_domain: ["Domain", "Top Level Domain"],
     prefix: "",
     suffix: "",
     group: "",
   });
 
-  const [separators] = useStorage("separators", {
-    "Group Separator": ".",
-    "Domain Separator": "_",
-    "Domain Inner Separator": ".",
-    "Prefix Separator": "_",
-    "Suffix Separator": "_",
-    "Word Inner Separator": "_"
-  });
-  const [counts] = useStorage("counts", {
-    "Character Count": 6,
-    "Word Count": 3
-  });
+  const [separators] = useStorage("separators", default_separators);
+  const [counts] = useStorage("counts", default_counts);
 
   const [disable_storing_aliases] = useStorage("disable_storing_aliases", false);
   const [generated_alias, setAlias] = useState("");
@@ -49,8 +40,8 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
     mode: "uncontrolled",
     initialValues: {
       base_domain: saved_settings?.base_domain || "",
-      random: saved_settings?.random || "",
-      current_domain: saved_settings?.current_domain || "",
+      random: saved_settings?.random || [],
+      current_domain: saved_settings?.current_domain || [],
       prefix: saved_settings?.prefix || "",
       suffix: saved_settings?.suffix || "",
       group: saved_settings?.group || "",
@@ -58,12 +49,6 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   });
 
   function handleSubmit() {
-    console.table({
-      disable_storing_aliases: disable_storing_aliases,
-      aliases: aliases,
-      generated_alias: generated_alias,
-      reverse_alias_order: reverse_alias_order,
-    });
     if (!disable_storing_aliases && aliases) {
       if (!aliases.includes(generated_alias)) {
         if (reverse_alias_order) {
@@ -94,7 +79,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
     });
   }
 
-  function aliasPreview(refresh: boolean) {
+  function aliasPreview(refresh: boolean = false) {
     const current_form = form.getValues();
     if (form_data !== current_form || refresh) {
       setFormData(current_form);
@@ -105,7 +90,12 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
 
   function loadSettings() {
     if (saved_settings) {
-      form.setValues(saved_settings);
+      if (!Array.isArray(saved_settings.current_domain) || !Array.isArray(saved_settings.random)) {
+        // migration check, page wont render if values set to wrong type of form, updating fields to arrays.
+        form.setValues({ ...saved_settings, random: ["Characters"], current_domain: ["Domain", "Top Level Domain"] });
+      } else {
+        form.setValues(saved_settings);
+      }
       aliasPreview(false);
     }
   }
@@ -132,7 +122,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
 
   return (
     <Box>
-      <form className="m-4" onSubmit={form.onSubmit(handleSubmit)} onChange={() => aliasPreview(false)} onClick={() => aliasPreview(false)}>
+      <form className="m-4" onSubmit={form.onSubmit(handleSubmit)} onChange={() => aliasPreview()} onClick={() => aliasPreview()}>
         <div className="mb-4">
           <Select
             size="sm"
@@ -146,23 +136,23 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
           />
         </div>
         <div className="mb-4">
-          <Select
+          <MultiSelect
             size="sm"
             label="Random"
-            allowDeselect={false}
             key={form.key("random")}
-            data={["Random Characters", "Random Words", "None"]}
+            data={["Characters", "Words"]}
+            onRemove={() => aliasPreview()}
             comboboxProps={{ position: "bottom", middlewares: { flip: false, shift: false } }}
             {...form.getInputProps("random")}
           />
         </div>
         <div className="mb-4">
-          <Select
+          <MultiSelect
             size="sm"
             label="Current Domain"
-            allowDeselect={false}
             key={form.key("current_domain")}
-            data={["Base Domain", "Domain", "Full Domain", "None"]}
+            data={["Subdomain", "Domain", "Top Level Domain"]}
+            onRemove={() => aliasPreview()}
             comboboxProps={{ position: "bottom", middlewares: { flip: false, shift: false } }}
             {...form.getInputProps("current_domain")}
           />

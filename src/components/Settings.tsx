@@ -29,6 +29,7 @@ import type {
   Separators,
   Theme
 } from "~utils/localstorage_types";
+import { default_counts, default_separators } from "~utils/localstorage_types";
 
 export default function Settings() {
   const [domain_collapse, setDomainCollapse] = useDisclosure(false);
@@ -48,20 +49,10 @@ export default function Settings() {
   const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
 
   const [separator, setSeparator] = useState("Group Separator");
-  const [separators, setSeparators] = useStorage<Separators>("separators", {
-    "Group Separator": ".",
-    "Domain Separator": "_",
-    "Domain Inner Separator": ".",
-    "Prefix Separator": "_",
-    "Suffix Separator": "_",
-    "Word Inner Separator": "_"
-  });
+  const [separators, setSeparators] = useStorage<Separators>("separators", default_separators);
 
   const [count, setCount] = useState("Character Count");
-  const [counts, setCounts] = useStorage<Counts>("counts", {
-    "Character Count": 6,
-    "Word Count": 3
-  });
+  const [counts, setCounts] = useStorage<Counts>("counts", default_counts);
 
   const is_mobile = /Mobile/.test(navigator.userAgent);
 

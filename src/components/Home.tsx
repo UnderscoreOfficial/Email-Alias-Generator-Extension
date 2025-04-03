@@ -15,18 +15,11 @@ export default function Home() {
   const is_mobile = /Mobile/.test(navigator.userAgent);
 
   useEffect(() => {
-    console.table({
-      default_tab: default_tab.current,
-      old_default_tab: old_default_tab
-    });
     if (default_tab.current && active_tab.length < 1) {
       setActiveTab(default_tab.current);
     } else if (default_tab.current === null) {
       // migrate old default_tab
-      console.log(default_tab.current);
       if (old_default_tab) {
-        console.log("OLD DEFAULT TAB");
-        console.log(old_default_tab);
         if (old_default_tab == "create") {
           localStorage.setItem("default_tab", "create");
           setActiveTab("create");
@@ -35,7 +28,6 @@ export default function Home() {
           setActiveTab("aliases");
         }
       } else {
-        console.log("NEW INSTALL");
         // new install default logic
         localStorage.setItem("default_tab", "aliases");
         setActiveTab("aliases");

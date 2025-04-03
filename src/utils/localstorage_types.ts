@@ -1,3 +1,17 @@
+export const default_separators = {
+  "Group Separator": ".",
+  "Domain Separator": "_",
+  "Domain Inner Separator": ".",
+  "Prefix Separator": "_",
+  "Suffix Separator": "_",
+  "Word Inner Separator": "_"
+};
+
+export const default_counts = {
+  "Character Count": 6,
+  "Word Count": 3
+};
+
 export type Separators = {
   "Group Separator": string,
   "Domain Separator": string,
@@ -14,8 +28,8 @@ export type Counts = {
 
 export type SavedSettings = {
   base_domain: string,
-  random: string,
-  current_domain: string,
+  random: string[],
+  current_domain: string[],
   prefix: string,
   suffix: string,
   group: string,

@@ -1,6 +1,6 @@
 import Home from "~components/Home";
 import "@mantine/core/styles.css";
-import { MantineProvider, createTheme, RemoveScroll, type MantineThemeOverride, ScrollArea, TextInput } from "@mantine/core";
+import { MantineProvider, createTheme, RemoveScroll, type MantineThemeOverride } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import '@mantine/notifications/styles.css';
 import "~style.css";
@@ -22,8 +22,10 @@ export default function IndexPopup() {
   const [previous_domains_length, setPrevousDomainsLength] = useState(0);
   const [mouse_entered, setMouseEntered] = useState(false);
   const [domains_msg_sent, setDomainsMsgSent] = useState(false);
-  const [reverse_alias_order, setReverseAliasOrder] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
   const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
+
+  // for migration
+  const [reverse_alias_order, setReverseAliasOrder] = useStorage<ReverseAliasOrder>("reverse_alias_order", undefined);
 
   const is_mobile = /Mobile/.test(navigator.userAgent);
 
