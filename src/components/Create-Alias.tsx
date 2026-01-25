@@ -4,7 +4,7 @@ import { notifications } from "@mantine/notifications";
 import { useStorage } from "@plasmohq/storage/hook";
 import { useEffect, useState } from "react";
 import { generateAlias } from "~utils/generated_alias";
-import type { Aliases, Domains, Groups, ReverseAliasOrder, SavedSettings, Url } from "~utils/localstorage_types";
+import type { Aliases, DefaultDomain, Domains, Groups, ReverseAliasOrder, SavedSettings, Url } from "~utils/localstorage_types";
 import { default_counts, default_separators } from "~utils/localstorage_types";
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
 
 export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   const [domains] = useStorage<Domains>("domains");
+  const [default_domain] = useStorage<DefaultDomain>("default_domain");
   const [groups] = useStorage<Groups>("groups");
   const [url] = useStorage<Url>("url");
   const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
@@ -39,7 +40,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      base_domain: saved_settings?.base_domain || "",
+      base_domain: saved_settings?.base_domain || default_domain || "",
       random: saved_settings?.random || [],
       current_domain: saved_settings?.current_domain || [],
       prefix: saved_settings?.prefix || "",
@@ -94,7 +95,7 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
         // migration check, page wont render if values set to wrong type of form, updating fields to arrays.
         form.setValues({ ...saved_settings, random: ["Characters"], current_domain: ["Domain", "Top Level Domain"] });
       } else {
-        form.setValues(saved_settings);
+        form.setValues({ ...saved_settings, base_domain: saved_settings.base_domain || default_domain || "" });
       }
       aliasPreview(false);
     }
