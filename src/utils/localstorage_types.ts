@@ -38,6 +38,7 @@ export type SavedSettings = {
 export type Url = string | undefined
 export type Domains = string[] | undefined
 export type Groups = string[] | undefined
+export type DefaultDomain = string | undefined
 
 export type Aliases = string[] | undefined
 export type ReverseAliasOrder = boolean | undefined
