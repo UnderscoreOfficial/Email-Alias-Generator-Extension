@@ -55,7 +55,8 @@
   },
   "manifest": {
     "permissions": [
-      "tabs"
+      "tabs",
+      "contextMenus"
     ],
     "browser_specific_settings": {
       "gecko": {
