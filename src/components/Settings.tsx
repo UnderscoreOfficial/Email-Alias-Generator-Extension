@@ -22,6 +22,7 @@ import type {
   Aliases,
   Counts,
   DefaultTab,
+  DefaultDomain,
   DisableStoringAliases,
   Domains,
   Groups,
@@ -34,6 +35,7 @@ import { default_counts, default_separators } from "~utils/localstorage_types";
 export default function Settings() {
   const [domain_collapse, setDomainCollapse] = useDisclosure(false);
   const [domains, setDomains] = useStorage<Domains>("domains", undefined);
+  const [default_domain, setDefaultDomain] = useStorage<DefaultDomain>("default_domain", undefined);
   const [domain_input, setDomainInput] = useState("");
 
   const [group_collapse, setGroupCollapse] = useDisclosure(false);
@@ -180,6 +182,10 @@ export default function Settings() {
     return 0;
   }
 
+  function changeDefaultDomain(value: string | null) {
+    setDefaultDomain(value || undefined);
+  }
+
   return (
     <Box>
       <section className="m-4 mb-3 mt-3 flex justify-between">
@@ -268,6 +274,21 @@ export default function Settings() {
           {domains?.map((name: string) => <Item name={name} id={"domains"} type={"Domain"} key={name}></Item>)}
         </Flex>
       </Collapse>
+      <section className="m-4 flex justify-between">
+        <Center>Default Domain</Center>
+        <section className="w-7/12">
+          <Select
+            allowDeselect={true}
+            size="sm"
+            data={domains || []}
+            value={default_domain || null}
+            onChange={changeDefaultDomain}
+            comboboxProps={{ position: "bottom", middlewares: { flip: false, shift: false } }}
+            searchable={domains && domains.length > 1 || false}
+            clearable
+          />
+        </section>
+      </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 flex justify-between">
         <Center>Groups</Center>
