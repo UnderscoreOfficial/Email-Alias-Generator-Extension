@@ -115,3 +115,28 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
   }
 });
+
+chrome.commands.onCommand.addListener(async (command) => {
+  console.log("Command received:", command);
+
+  if (command == "keybind-alias") {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+
+    if (tab?.id) {
+      const alias = await generateAndSaveAlias(tab.url);
+      if (alias) {
+        chrome.tabs
+          .sendMessage(tab.id, {
+            action: "insertAllAliases",
+            alias: alias
+          })
+          .catch(() => {
+            // Ignore error if content script is not ready or tab is not compatible
+          });
+      }
+    }
+  }
+});

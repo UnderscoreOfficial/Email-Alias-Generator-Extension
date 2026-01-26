@@ -169,6 +169,21 @@ function insertAlias(
   navigator.clipboard.writeText(alias);
 }
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "insertAllAliases" && message.alias) {
+    for (let inputs of email_inputs) {
+      if (inputs.tagName === "INPUT" || inputs.tagName === "TEXTAREA") {
+        insertAlias(
+          inputs as HTMLInputElement | HTMLTextAreaElement,
+          message.alias
+        );
+      } else if (inputs.isContentEditable) {
+        document.execCommand("insertText", false, message.alias);
+      }
+    }
+  }
+});
+
 // Runtime message listener for context menu interactions
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "insertAlias" && message.alias) {
@@ -187,8 +202,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 const EMAIL_INPUT_SELECTOR = 'input[type="email"], input[name="email"]';
 
+const email_inputs = new Set<HTMLInputElement>();
+
 function findAndInjectButtons(root: Document | HTMLElement) {
   root.querySelectorAll(EMAIL_INPUT_SELECTOR).forEach((input) => {
+    const html_input = input as HTMLInputElement;
+    email_inputs.add(html_input);
     injectButton(input as HTMLInputElement);
   });
 }
