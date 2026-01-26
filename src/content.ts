@@ -166,6 +166,7 @@ function insertAlias(
 
   // Move cursor to end
   input.focus();
+  navigator.clipboard.writeText(alias);
 }
 
 // Runtime message listener for context menu interactions

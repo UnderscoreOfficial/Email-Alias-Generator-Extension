@@ -74,7 +74,6 @@ const generateAndSaveAlias = async (
           await storage.set("aliases", new_aliases);
         }
       }
-      navigator.clipboard.writeText(alias);
       return alias;
     }
   } catch (e) {
