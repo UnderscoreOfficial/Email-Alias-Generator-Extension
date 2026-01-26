@@ -41,3 +41,7 @@ keys.json
 # typescript
 .tsbuildinfo
 package-lock.json
+<<<<<<< HEAD
+=======
+tsconfig.tsbuildinfo
+>>>>>>> 97c1c80 (fix: untrack tsconfig.tsbuildinfo)
