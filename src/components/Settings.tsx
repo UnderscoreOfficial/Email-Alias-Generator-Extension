@@ -241,28 +241,6 @@ export default function Settings() {
           offLabel="Disabled"></Switch>
       </section>
       <Divider className="ml-4 mr-4"></Divider>
-      <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Disable Alias Storing</Center>
-        <Switch
-          checked={disable_storing_aliases}
-          onChange={changeDisablingAliases}
-          className="inline-block"
-          size="xl"
-          onLabel="Enabled"
-          offLabel="Disabled"></Switch>
-      </section>
-      <Divider className="ml-4 mr-4"></Divider>
-      <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Disable Context Popup Icon</Center>
-        <Switch
-          checked={disable_context_popup_icon}
-          onChange={changeContextPopupIcon}
-          className="inline-block"
-          size="xl"
-          onLabel="Enabled"
-          offLabel="Disabled"></Switch>
-      </section>
-      <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 flex justify-between">
         <Center>Separators</Center>
         <section className="w-7/12">
@@ -426,6 +404,28 @@ export default function Settings() {
           ))}
         </Flex>
       </Collapse>
+      <Divider className="ml-4 mr-4"></Divider>
+      <section className="m-4 mb-3 mt-3 flex justify-between">
+        <Center>Disable Alias Storing</Center>
+        <Switch
+          checked={disable_storing_aliases}
+          onChange={changeDisablingAliases}
+          className="inline-block"
+          size="xl"
+          onLabel="Enabled"
+          offLabel="Disabled"></Switch>
+      </section>
+      <Divider className="ml-4 mr-4"></Divider>
+      <section className="m-4 mb-3 mt-3 flex justify-between">
+        <Center>Disable Context Popup Icon</Center>
+        <Switch
+          checked={disable_context_popup_icon}
+          onChange={changeContextPopupIcon}
+          className="inline-block"
+          size="xl"
+          onLabel="Enabled"
+          offLabel="Disabled"></Switch>
+      </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
         <Center>Version (1.0.0)</Center>

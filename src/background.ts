@@ -5,7 +5,6 @@ import { default_counts, default_separators } from "~utils/localstorage_types";
 import type {
   Aliases,
   Counts,
-  DefaultDomain,
   DisableStoringAliases,
   ReverseAliasOrder,
   SavedSettings,
@@ -18,24 +17,25 @@ const generateAndSaveAlias = async (
   url: string | undefined
 ): Promise<string | null> => {
   try {
-    const saved_settings = await storage.get<SavedSettings>("saved_settings");
+    const context_saved_settings = await storage.get<SavedSettings>(
+      "context_saved_settings"
+    );
     const domains = await storage.get<string[]>("domains");
-    const default_domain = await storage.get<DefaultDomain>("default_domain");
 
     const base_domain =
-      saved_settings?.base_domain || default_domain || domains?.[0] || "";
+      context_saved_settings?.base_domain || domains?.[0] || "";
 
     // If no base domain is available, we can't generate a valid alias really,
     // but generateAlias handles empty base_domain by returning empty string.
 
-    const random = saved_settings?.random || ["Characters"];
-    const current_domain = saved_settings?.current_domain || [
+    const random = context_saved_settings?.random || ["Characters"];
+    const current_domain = context_saved_settings?.current_domain || [
       "Domain",
       "Top Level Domain"
     ];
-    const prefix = saved_settings?.prefix || "";
-    const suffix = saved_settings?.suffix || "";
-    const group = saved_settings?.group || "";
+    const prefix = context_saved_settings?.prefix || "";
+    const suffix = context_saved_settings?.suffix || "";
+    const group = context_saved_settings?.group || "";
 
     const separators =
       (await storage.get<Separators>("separators")) || default_separators;
@@ -74,6 +74,7 @@ const generateAndSaveAlias = async (
           await storage.set("aliases", new_aliases);
         }
       }
+      navigator.clipboard.writeText(alias);
       return alias;
     }
   } catch (e) {
