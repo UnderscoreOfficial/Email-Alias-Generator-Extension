@@ -57,7 +57,15 @@
     "permissions": [
       "tabs",
       "contextMenus"
-    ],
+    ],    
+    "commands": {
+      "keybind-alias": {
+        "suggested_key": {
+          "default": "Alt+Shift+O"
+        },
+        "description": "Fill alias from keybind"
+      }
+    },
     "browser_specific_settings": {
       "gecko": {
         "id": "{ba596a7d-1393-4312-9a0a-69c47ebfd05c}"
