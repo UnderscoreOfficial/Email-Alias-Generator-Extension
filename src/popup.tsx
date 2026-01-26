@@ -67,12 +67,15 @@ export default function IndexPopup() {
 
   async function currentUrl() {
     try {
-      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+      if (typeof browser !== "undefined") {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        return tab?.url;
+      }
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       return tab?.url;
     } catch (e) {
       console.error(e);
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      return tab?.url;
+      return undefined;
     }
   }
 
