@@ -62,7 +62,17 @@
       "gecko": {
         "id": "{ba596a7d-1393-4312-9a0a-69c47ebfd05c}"
       }
-    }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "assets/icon.png"
+        ],
+        "matches": [
+          "<all_urls>"
+        ]
+      }
+    ]
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
