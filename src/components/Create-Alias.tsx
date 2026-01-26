@@ -294,20 +294,20 @@ export default function CreateAlias({ setActiveTab, active_tab }: Props) {
           </Tooltip>
         </section>
         <Flex className="justify-evenly gap-2">
-          <Flex className="justify-evenly gap-2">
-            <Tooltip label="Save context menu setting">
+          <Flex className="justify-evenly gap-2 w-7/12">
+            <Tooltip label="Save context menu settings">
               <Button
                 onClick={contextSaveSettings}
-                className="gray-button w-3/12 flex justify-center border-2"
+                className="gray-button w-fit flex justify-center border-2"
                 color="gray"
                 type="button">
                 Context
               </Button>
             </Tooltip>
-            <Tooltip label="Save create alias setting">
+            <Tooltip label="Save create alias settings">
               <Button
                 onClick={saveSettings}
-                className="gray-button w-7/12 flex justify-center border-2"
+                className="gray-button w-fit flex justify-center border-2"
                 color="gray"
                 type="button">
                 Save Settings
