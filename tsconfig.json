@@ -22,6 +22,16 @@
         "./src/*"
       ]
     },
+    "types": [
+      "chrome",
+      "node",
+      "react",
+      "react-dom",
+      "firefox-webext-browser"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
     "baseUrl": ".",
     "target": "esnext",
     "lib": [
