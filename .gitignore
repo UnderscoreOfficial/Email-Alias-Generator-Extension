@@ -41,4 +41,3 @@ keys.json
 # typescript
 .tsbuildinfo
 package-lock.json
-.gitignore
