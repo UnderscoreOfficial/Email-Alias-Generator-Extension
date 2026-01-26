@@ -1,11 +1,21 @@
 import type { PlasmoCSConfig } from "plasmo";
 
+import { Storage } from "@plasmohq/storage";
+
+import type { DisableContextPopupIcon } from "~utils/localstorage_types";
+
+const storage = new Storage();
+
 export const config: PlasmoCSConfig = {
   matches: ["<all_urls>"]
 };
 
 // Logic to inject the floating action button for email inputs
-function injectButton(input: HTMLInputElement) {
+async function injectButton(input: HTMLInputElement) {
+  const disable_context_popup_icon = await storage.get<DisableContextPopupIcon>(
+    "disable_context_popup_icon"
+  );
+  if (disable_context_popup_icon) return;
   // Check if button already exists for this input
   if (input.dataset["eagHasButton"] === "true") return;
 
@@ -148,17 +158,6 @@ function insertAlias(
 ) {
   // Ensure we can write to it
   if (input.readOnly || input.disabled) return;
-
-  // Replace the entire value
-  // const start = input.selectionStart ?? input.value.length
-  // const end = input.selectionEnd ?? input.value.length
-  // const text = input.value
-
-  // const before = text.substring(0, start)
-  // const after = text.substring(end)
-
-  // input.value = before + alias + after
-
   input.value = alias;
 
   // Dispatch input events
@@ -166,8 +165,6 @@ function insertAlias(
   input.dispatchEvent(new Event("change", { bubbles: true }));
 
   // Move cursor to end
-  // const newPos = start + alias.length
-  // input.setSelectionRange(newPos, newPos)
   input.focus();
 }
 
@@ -177,9 +174,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const element = document.activeElement as HTMLElement;
     if (!element) return;
     if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
-      insertAlias(element as HTMLInputElement | HTMLTextAreaElement, message);
+      insertAlias(
+        element as HTMLInputElement | HTMLTextAreaElement,
+        message.alias
+      );
     } else if (element.isContentEditable) {
-      document.execCommand("insertText", false, message);
+      document.execCommand("insertText", false, message.alias);
     }
   }
 });
