@@ -88,6 +88,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             chrome.tabs.sendMessage(tab.id, {
                 action: "insertAlias",
                 alias: alias
+            }).catch(() => {
+                // Ignore error if content script is not ready or tab is not compatible
             })
         }
     }
