@@ -130,9 +130,16 @@ export default function Settings() {
     }
   }
 
-  function changeContextPopupIcon() {
+  async function changeContextPopupIcon() {
     if (!disable_context_popup_icon) setDisableContextPopupIcon(false);
     setDisableContextPopupIcon(!disable_context_popup_icon);
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+    if (tab?.id) {
+      chrome.tabs.reload(tab.id);
+    }
   }
 
   function changeDefaultTab() {
@@ -428,7 +435,12 @@ export default function Settings() {
       </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Version (1.0.0)</Center>
+        <Center>Autofill Keybind</Center>
+        <Center className="text-md mr-2">Alt+Shift+O</Center>
+      </section>
+      <Divider className="ml-4 mr-4"></Divider>
+      <section className="m-4 mb-3 mt-3 flex justify-between">
+        <Center>Version (1.1.0)</Center>
         <Center className="text-lg mr-2">
           Github
           <a href="https://github.com/UnderscoreOfficial/Email-Alias-Generator-Extension">

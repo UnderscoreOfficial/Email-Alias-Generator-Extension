@@ -12,6 +12,7 @@ export const config: PlasmoCSConfig = {
 
 // Logic to inject the floating action button for email inputs
 async function injectButton(input: HTMLInputElement) {
+  let hover_active = false;
   const disable_context_popup_icon = await storage.get<DisableContextPopupIcon>(
     "disable_context_popup_icon"
   );
@@ -26,7 +27,7 @@ async function injectButton(input: HTMLInputElement) {
 
   const button = document.createElement("button");
   button.type = "button";
-  button.style.position = "absolute";
+  // button.style.position = "absolute";
   button.style.cursor = "pointer";
   button.style.border = "none";
   button.style.background = "transparent"; // Becomes transparent to show icon
@@ -39,7 +40,7 @@ async function injectButton(input: HTMLInputElement) {
   button.style.zIndex = "10000";
   button.style.display = "block"; // content-box, or flex
   button.style.transition =
-    "transform 0.1s, filter 0.1s, opacity 0.3s, visibility 0.3s";
+    "transform 0.1s, filter 0.1s, opacity 0.2s ease-out, visibility 0.3s";
   button.style.transformOrigin = "center";
   button.style.opacity = "0";
   button.style.visibility = "hidden";
@@ -56,16 +57,18 @@ async function injectButton(input: HTMLInputElement) {
   };
 
   const fadeOut = () => {
-    button.style.opacity = "0";
     button.style.visibility = "hidden";
     button.style.pointerEvents = "none";
+    button.style.opacity = "0";
   };
 
   const checkVisibility = () => {
-    if (document.hidden || !document.hasFocus()) {
+    if (
+      document.hidden ||
+      !document.hasFocus() ||
+      getComputedStyle(input).visibility === "hidden"
+    ) {
       fadeOut();
-    } else {
-      fadeIn();
     }
   };
   checkVisibility();
@@ -74,14 +77,20 @@ async function injectButton(input: HTMLInputElement) {
   window.addEventListener("focus", checkVisibility);
   window.addEventListener("blur", checkVisibility);
 
+  // document.body.appendChild(button);
+  document.body.appendChild(button);
+  input.dataset["eagHasButton"] = "true";
+
   // Position it
   const updatePosition = () => {
     // Check if input is still in DOM
     if (!document.body.contains(input)) {
       button.remove();
+      resizeObserver.disconnect();
       document.removeEventListener("visibilitychange", checkVisibility);
       window.removeEventListener("focus", checkVisibility);
       window.removeEventListener("blur", checkVisibility);
+      window.removeEventListener("focusin", focusOut);
       return;
     }
 
@@ -93,25 +102,17 @@ async function injectButton(input: HTMLInputElement) {
       rect.height === 0 ||
       getComputedStyle(input).visibility === "hidden"
     ) {
-      button.style.opacity = "0";
       button.style.visibility = "hidden";
       button.style.pointerEvents = "none";
+      button.style.opacity = "0";
       return;
-    } else {
-      // Only restore visibility if window has focus
-      if (document.hasFocus()) {
-        button.style.opacity = "1";
-        button.style.visibility = "visible";
-        button.style.pointerEvents = "auto";
-      }
     }
 
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
-
-    // Center vertically in the input, place on the right side with some padding
-    button.style.top = rect.top + scrollTop + (rect.height - 24) / 2 + "px";
-    button.style.left = rect.left + scrollLeft + rect.width - 32 + "px";
+    // // Center vertically in the input, place on the right side with some padding
+    button.style.position = "fixed"; // or 'absolute' depending on scroll behavior
+    button.style.left = `${rect.right - 30}px`;
+    button.style.top = `${rect.top + rect.height / 2}px`;
+    button.style.transform = "translateY(-50%)";
   };
 
   // Initial position
@@ -126,13 +127,29 @@ async function injectButton(input: HTMLInputElement) {
   // Update position on scroll/resize
   window.addEventListener("scroll", updatePosition, true);
   window.addEventListener("resize", updatePosition);
+  window.addEventListener("focusin", focusOut);
+
+  input.onmouseenter = () => {
+    hover_active = true;
+    updatePosition();
+    fadeIn();
+  };
+  function focusOut(event: FocusEvent) {
+    if (event.target != input) {
+      fadeOut();
+    }
+  }
 
   button.onmouseenter = () => {
-    button.style.transform = "scale(1.1)";
+    hover_active = true;
+  };
+
+  button.onmouseenter = () => {
+    // button.style.transform = "scale(1.1)";
     button.style.filter = "brightness(0.8)";
   };
   button.onmouseleave = () => {
-    button.style.transform = "scale(1)";
+    // button.style.transform = "scale(1)";
     button.style.filter = "brightness(1)";
   };
 
@@ -147,9 +164,6 @@ async function injectButton(input: HTMLInputElement) {
       }
     });
   };
-
-  document.body.appendChild(button);
-  input.dataset["eagHasButton"] = "true";
 }
 
 function insertAlias(
@@ -181,6 +195,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         document.execCommand("insertText", false, message.alias);
       }
     }
+    navigator.clipboard.writeText(message.alias);
   }
 });
 
@@ -197,6 +212,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else if (element.isContentEditable) {
       document.execCommand("insertText", false, message.alias);
     }
+    navigator.clipboard.writeText(message.alias);
   }
 });
 
