@@ -32,6 +32,7 @@ I wanted something similar in ease of use equal to how password managers generat
     - Open the downloaded file (firefox will confirm if you want to install this extension)
 
 ## Features
+- Auto fill generated emails (Alt+Shift+o) right click context menu or click the icon EAG on a website
 - Flexible settings to change how alias is generated / what is enabled
 - Random character / word generation
 - Get current website url

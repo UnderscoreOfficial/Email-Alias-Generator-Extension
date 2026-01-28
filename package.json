@@ -1,7 +1,7 @@
 {
   "name": "email-alias-generator",
   "displayName": "EAG: Email Alias Generator Extension",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Generate Email Aliases",
   "author": "UnderscoreOfficial",
   "scripts": {
@@ -51,13 +51,14 @@
     "prettier": "3.5.3",
     "tailwindcss": "3.4.17",
     "typescript": "5.8.2",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.26.1",
+    "update-browserslist-db": "^1.2.3"
   },
   "manifest": {
     "permissions": [
       "tabs",
       "contextMenus"
-    ],    
+    ],
     "commands": {
       "keybind-alias": {
         "suggested_key": {
