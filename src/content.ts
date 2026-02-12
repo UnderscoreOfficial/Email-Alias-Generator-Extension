@@ -2,7 +2,10 @@ import type { PlasmoCSConfig } from "plasmo";
 
 import { Storage } from "@plasmohq/storage";
 
-import type { DisableContextPopupIcon } from "~utils/localstorage_types";
+import type {
+  EmailPopupIcon,
+  EmailPopupIconOffset
+} from "~utils/localstorage_types";
 
 const storage = new Storage();
 
@@ -13,10 +16,12 @@ export const config: PlasmoCSConfig = {
 // Logic to inject the floating action button for email inputs
 async function injectButton(input: HTMLInputElement) {
   let hover_active = false;
-  const disable_context_popup_icon = await storage.get<DisableContextPopupIcon>(
-    "disable_context_popup_icon"
+  const email_popup_icon =
+    await storage.get<EmailPopupIcon>("email_popup_icon");
+  const email_popup_icon_offest = await storage.get<EmailPopupIconOffset>(
+    "email_popup_icon_offset"
   );
-  if (disable_context_popup_icon) return;
+  if (email_popup_icon) return;
   // Check if button already exists for this input
   if (input.dataset["eagHasButton"] === "true") return;
 
@@ -110,7 +115,7 @@ async function injectButton(input: HTMLInputElement) {
 
     // // Center vertically in the input, place on the right side with some padding
     button.style.position = "fixed"; // or 'absolute' depending on scroll behavior
-    button.style.left = `${rect.right - 30}px`;
+    button.style.left = `${rect.right - (email_popup_icon_offest ? 30 : 65)}px`;
     button.style.top = `${rect.top + rect.height / 2}px`;
     button.style.transform = "translateY(-50%)";
   };

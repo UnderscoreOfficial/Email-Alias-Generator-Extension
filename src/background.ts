@@ -13,9 +13,9 @@ import type {
 
 const storage = new Storage();
 
-const generateAndSaveAlias = async (
+async function generateAndSaveAlias(
   url: string | undefined
-): Promise<string | null> => {
+): Promise<string | null> {
   try {
     const context_saved_settings = await storage.get<SavedSettings>(
       "context_saved_settings"
@@ -80,7 +80,7 @@ const generateAndSaveAlias = async (
     console.error("EAG: Error generating alias", e);
   }
   return null;
-};
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "generate_alias") {
