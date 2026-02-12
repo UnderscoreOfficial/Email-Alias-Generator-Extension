@@ -22,9 +22,10 @@ import type {
   Aliases,
   Counts,
   DefaultTab,
-  DisableContextPopupIcon,
   DisableStoringAliases,
   Domains,
+  EmailPopupIcon,
+  EmailPopupIconOffset,
   Groups,
   ReverseAliasOrder,
   Separators,
@@ -55,11 +56,12 @@ export default function Settings() {
   const [disable_storing_aliases, setDisableStoringAliases] =
     useStorage<DisableStoringAliases>("disable_storing_aliases", undefined);
   const [aliases, setAliases] = useStorage<Aliases>("aliases", undefined);
-  const [disable_context_popup_icon, setDisableContextPopupIcon] =
-    useStorage<DisableContextPopupIcon>(
-      "disable_context_popup_icon",
-      undefined
-    );
+  const [email_popup_icon, setEmailPopupIcon] = useStorage<EmailPopupIcon>(
+    "email_popup_icon",
+    undefined
+  );
+  const [email_popup_icon_offset, setEmailPopupIconOffset] =
+    useStorage<EmailPopupIconOffset>("email_popup_icon_offset", undefined);
 
   const [separator, setSeparator] = useState("Group Separator");
   const [separators, setSeparators] = useStorage<Separators>(
@@ -130,9 +132,7 @@ export default function Settings() {
     }
   }
 
-  async function changeContextPopupIcon() {
-    if (!disable_context_popup_icon) setDisableContextPopupIcon(false);
-    setDisableContextPopupIcon(!disable_context_popup_icon);
+  async function reloadCurrentTab() {
     const [tab] = await chrome.tabs.query({
       active: true,
       currentWindow: true
@@ -140,6 +140,18 @@ export default function Settings() {
     if (tab?.id) {
       chrome.tabs.reload(tab.id);
     }
+  }
+
+  async function changeEmailPopupIcon() {
+    if (!email_popup_icon) setEmailPopupIcon(false);
+    setEmailPopupIcon(!email_popup_icon);
+    reloadCurrentTab();
+  }
+
+  async function changeEmailPopupIconOffset() {
+    if (!email_popup_icon_offset) setEmailPopupIconOffset(false);
+    setEmailPopupIconOffset(!email_popup_icon_offset);
+    reloadCurrentTab();
   }
 
   function changeDefaultTab() {
@@ -234,18 +246,6 @@ export default function Settings() {
           size="xl"
           onLabel="Create"
           offLabel="Aliases"></Switch>
-      </section>
-      <Divider className="ml-4 mr-4"></Divider>
-      <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Reverse Aliases Order</Center>
-        <Switch
-          checked={reverse_alias_order}
-          disabled={disable_storing_aliases}
-          onChange={changeAliasOrder}
-          className="inline-block"
-          size="xl"
-          onLabel="Enabled"
-          offLabel="Disabled"></Switch>
       </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 flex justify-between">
@@ -413,9 +413,9 @@ export default function Settings() {
       </Collapse>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Disable Alias Storing</Center>
+        <Center>Alias Storing</Center>
         <Switch
-          checked={disable_storing_aliases}
+          checked={!disable_storing_aliases}
           onChange={changeDisablingAliases}
           className="inline-block"
           size="xl"
@@ -424,10 +424,35 @@ export default function Settings() {
       </section>
       <Divider className="ml-4 mr-4"></Divider>
       <section className="m-4 mb-3 mt-3 flex justify-between">
-        <Center>Disable Context Popup Icon</Center>
+        <Center>Reverse Aliases Order</Center>
         <Switch
-          checked={disable_context_popup_icon}
-          onChange={changeContextPopupIcon}
+          checked={reverse_alias_order}
+          disabled={disable_storing_aliases}
+          onChange={changeAliasOrder}
+          className="inline-block"
+          size="xl"
+          onLabel="Enabled"
+          offLabel="Disabled"></Switch>
+      </section>
+      <Divider className="ml-4 mr-4"></Divider>
+      <section className="m-4 mb-3 mt-3 flex justify-between">
+        <Center>Email Popup Icon</Center>
+        <Switch
+          checked={!email_popup_icon}
+          onChange={changeEmailPopupIcon}
+          className="inline-block"
+          size="xl"
+          onLabel="Enabled"
+          offLabel="Disabled"></Switch>
+      </section>
+      <Divider className="ml-4 mr-4"></Divider>
+      <section className="m-4 mb-3 mt-3 flex justify-between">
+        <Tooltip label="Icon offest avoids conflicts with password manager icons">
+          <Center>Popup Icon Offest</Center>
+        </Tooltip>
+        <Switch
+          checked={!email_popup_icon_offset}
+          onChange={changeEmailPopupIconOffset}
           className="inline-block"
           size="xl"
           onLabel="Enabled"

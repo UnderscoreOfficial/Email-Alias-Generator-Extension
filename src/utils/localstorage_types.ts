@@ -45,7 +45,8 @@ export type DefaultDomain = string | undefined;
 export type Aliases = string[] | undefined;
 export type ReverseAliasOrder = boolean | undefined;
 export type DisableStoringAliases = boolean | undefined;
-export type DisableContextPopupIcon = boolean | undefined;
+export type EmailPopupIcon = boolean | undefined;
+export type EmailPopupIconOffset = boolean | undefined;
 
 export type Tabs = "create" | "aliases" | "settings";
 export type DefaultTab = Tabs | undefined;
