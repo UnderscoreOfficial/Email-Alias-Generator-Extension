@@ -92,13 +92,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: "fill-alias",
-    title: "Enter generated alias",
-    contexts: ["editable"]
+try {
+  chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.create({
+      id: "fill-alias",
+      title: "Enter generated alias",
+      contexts: ["editable"]
+    });
   });
-});
+} catch (e) {
+  console.warn("EAG: context menu already created skipping...");
+}
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "fill-alias" && tab?.id) {

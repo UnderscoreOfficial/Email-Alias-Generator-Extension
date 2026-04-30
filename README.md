@@ -60,7 +60,7 @@ this will disable the alias page, change the create page to copy only and force 
 1. Install Node.js
 2. Install pnpm: `npm install -g pnpm`
 3. Clone repo: `git clone https://github.com/UnderscoreOfficial/Email-Alias-Generator-Extension.git`
-4. Run build cmd: `pnpm build` for firefox, `pnpm build:chrome` for chrome
+4. Run build cmd: `pnpm build:firefox` for firefox, `pnpm build:chrome` for chrome
 5. Output is in the `build` folder `build/firefox-mv3-prod` or `build/chrome-mv3-prod`
 
 - Firefox
