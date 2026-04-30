@@ -82,7 +82,6 @@ async function injectButton(input: HTMLInputElement) {
   window.addEventListener("focus", checkVisibility);
   window.addEventListener("blur", checkVisibility);
 
-  // document.body.appendChild(button);
   document.body.appendChild(button);
   input.dataset["eagHasButton"] = "true";
 
@@ -147,14 +146,9 @@ async function injectButton(input: HTMLInputElement) {
 
   button.onmouseenter = () => {
     hover_active = true;
-  };
-
-  button.onmouseenter = () => {
-    // button.style.transform = "scale(1.1)";
     button.style.filter = "brightness(0.8)";
   };
   button.onmouseleave = () => {
-    // button.style.transform = "scale(1)";
     button.style.filter = "brightness(1)";
   };
 
